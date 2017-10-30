@@ -20,12 +20,19 @@ include["alias for your results"] = {'$relation':{'name':'name of the relation',
 Example using the classic movie rental database:
 
 includes["rental"] = {'$relation':{name:'rental',joinType:'inner join',orderBy:[{'rental_id':'ASC'}]}};
+
 includes["rental"]["staff"] = {'$relation':{name:'staff',joinType:'left join',orderBy:[{'staff_id':'ASC'}]}};
+
 includes["rental"]["staff"]["store"] = {'$relation':{name:'store',joinType:'left join',orderBy:[{'store_id':'ASC'}]}};
+
 includes["rental"]["payment"] = {'$relation':{name:'payment',joinType:'inner join',orderBy:[{'payment_id':'ASC'}]}};
+
 includes["rental"]["inventory"] = {'$relation':{name:'inventory',joinType:'left join',orderBy:[{'inventory_id':'ASC'}]}};
+
 includes["rental"]["inventory"]["film"] = {'$relation':{name:'film',joinType:'left join',orderBy:[{'film_id':'ASC'}]}};
+
 includes["rental"]["inventory"]["film"]["filmActor"] = {'$relation':{name:'filmActor',joinType:'left join',orderBy:[{'actor_id':'ASC'}]}};
+
 includes["address"] = {'$relation':{name:'address',joinType:'left join'}};
 
 Valid alias names are the same regex as valid javascript functions, this come handy to query multiple results in one query.
