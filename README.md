@@ -18,6 +18,7 @@ then
 include["alias for your results"] = {'$relation':{'name':'name of the relation','joinType':'INNER JOIN or LEFT JOIN or RIGHT JOIN',orderBy:[{'property':'ORDER DIRECTION ASC OR DESC'}...], where:[VALID WHERE CONDITION],having:[VALID HAVING CONDITION],select:{include:[],exclude:[]}}
 
 Example using the classic movie rental database:
+includes = {}; 
 
 includes["rental"] = {'$relation':{name:'rental',joinType:'inner join',orderBy:[{'rental_id':'ASC'}]}};
 
