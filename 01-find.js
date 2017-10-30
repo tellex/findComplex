@@ -1,4 +1,4 @@
-var findComplex = require('../../custom/find.js');
+var findComplex = require('../../custom/findComplex.js');
 var exclude = [];
 var include = [];
 
