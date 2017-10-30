@@ -42,7 +42,7 @@ VALID WHERE CONDITIONS
 I changed where condition syntaxis, with one more intuitive allowing postgresql functions of any deept:
 
 rental example where filter:
- WHERE = ['order_date','>=','2017-08-12','AND',{substr:['barcode',1,3]},'!=','EU','OR',['order_date','between',['2017-07-10','2017-07-15'],'AND',{substr:['barcode',1,2]},'=','EU' ],'OR',['order_date','between',['2017-05-10','2017-06-15'],'AND',{substr:['barcode',1,2]},'=','US']],
+ WHERE = [ 'order_date' , '>=' , '2017-08-12' , 'AND' , {substr:['barcode',1,3]} , '!=' , 'EU' , 'OR' ,[ 'order_date' , 'between' , [ '2017-07-10' , '2017-07-15' ], 'AND' , {substr:['barcode',1,2]}, '=' , 'EU' ], 'OR' ,[ 'order_date' , 'between' , ['2017-05-10','2017-06-15'], 'AND' , {substr:['barcode',1,2]}, '=' , 'US' ]],
  
  generates this sql:
  rental.order_date >= '2017-08-12' and substr(rental.barcode,1,2) != 'EU' or (rental.order_date between ('2017-07-10',2017-07-15) and substr(rental.barcode,1,2) = 'EU') or (rental.order_date between ('2017-05-10',2017-06-15) and substr(rental.barcode,1,2) = 'US')
