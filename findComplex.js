@@ -971,7 +971,7 @@ findComplex.prototype.find = function(filter,cb){
 
 
   if(typeof filter.include != 'undefined' && filter.include != null){
-      include = this.createJoins(includes,this.modelName);
+      include = this.createJoins(filter.include,this.modelName);
       joinSqls = this.translateJoin(include);
       if(typeof filter.offset != 'undefined'  && filter.offset !== null){
         pagingJoins = this.translateJoin(include,'PAGING');
