@@ -979,7 +979,7 @@ findComplex.prototype.find = function(filter,cb){
       }
     }
 
-  mainSql = that.generateQuery(filter.select,filter.where,filter.order,filter.offset,filter.limit,joinSqls,pagingSql);
+  mainSql = this.generateQuery(filter.select,filter.where,filter.order,filter.offset,filter.limit,joinSqls,pagingSql);
   sql = this.datasource.connector.parameterize(mainSql);
   this.datasource.connector.execute(sql.sql,sql.params,function(error,data){
     
