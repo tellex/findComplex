@@ -201,6 +201,7 @@ findComplex.prototype.createCondition = function(data,alias,parentParams,parentF
           case 'NOT IN':
             tmp = that.buildInClause(field);
             sqlCondition = ParameterizedSQL.append(sqlCondition,tmp);
+            isValue = false;
             break;
           default:
             tmp = that.createCondition(field,alias);
