@@ -1,0 +1,19 @@
+{
+  "name": "loopback-postgres-find-complex",
+  "version": "1.0.0",
+  "description": "A loopback postgresql model find extension to perform complex queries, related models inner,left,right joins with complex where,having and order conditions, compiled in one big sql query using postgresql >= 9.2 new json functions to perform model relations serialization directly on postgres.",
+  "main": "findComplex.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kleiolab/findComplex.git"
+  },
+  "author": "Ezequiel Telleria",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kleiolab/findComplex/issues"
+  },
+  "homepage": "https://github.com/kleiolab/findComplex#readme"
+}
