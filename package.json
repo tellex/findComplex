@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kleiolab/findComplex.git"
+    "url": "git+https://github.com/tellex/findComplex.git"
   },
-  "author": "Ezequiel Telleria",
-  "license": "ISC",
+  "author": "https://github.com/tellex/findComplex/graphs/contributors",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kleiolab/findComplex/issues"
+    "url": "https://github.com/tellex/findComplex/issues"
   },
-  "homepage": "https://github.com/kleiolab/findComplex#readme"
+  "homepage": "https://github.com/tellex/findComplex#readme"
 }
