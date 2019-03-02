@@ -1,14 +1,28 @@
 # findComplex
+
+## Description
 A loopback postgresql model find extension to perform complex queries, related models inner,left,right joins with complex where,having and order conditions, compiled in one big sql query using postgresql >= 9.2 new json functions to perform model relations serialization directly on postgres.
 
-Requirements are postgresql >= 9.2.
-To install create a new directory "custom" in your root loopback installation and copy findComplex.js, then add 01-find.js to /server/boot  
+## Requirements 
+
+postgresql >= 9.2.
+
+## Installation
+
+Using npm:
+
+~~~~
+npm i tellex/findComplex --save
+~~~~
+
+Add a copy of 01-find.js to /server/boot  
 
 Inside 01-find.js can specify wich models to include or exclude findComplex method.
 include = [] can be empty in wich case findComplex method will be added to all postgresql models. 
 Example include=["users","teams"]
 exclude = [] wich models to exclude can be used in combination of an empty include = [] 
 
+## Usage
 Related models include new syntaxsis:
 
 I didn't like loopback way of defining relations, specially when dealing with many models in multiple levels of deept.

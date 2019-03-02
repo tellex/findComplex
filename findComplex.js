@@ -201,6 +201,7 @@ findComplex.prototype.createCondition = function(data,alias,parentParams,parentF
           case 'NOT IN':
             tmp = that.buildInClause(field);
             sqlCondition = ParameterizedSQL.append(sqlCondition,tmp);
+            isValue = false;
             break;
           default:
             tmp = that.createCondition(field,alias);
@@ -496,7 +497,7 @@ findComplex.prototype.translateJoin = function(join,method='LATERAL',parentJoin,
             mainQuery = mainQuery.merge(closeJoin.where,"");
           }
         }
-        if(closeJoin.parentJoin.groupBy != null) mainQuery.sql = mainQuery.sql + "GROUP BY "+closeJoin.parentJoin.groupBy;
+        if(closeJoin.parentJoin.groupBy != null) mainQuery.sql = mainQuery.sql + " GROUP BY "+closeJoin.parentJoin.groupBy;
         if(closeJoin.having != null){
           mainQuery.sql = mainQuery.sql + " HAVING ";
           mainQuery = mainQuery.merge(closeJoin.having,"");
@@ -646,29 +647,29 @@ findComplex.prototype.createMainSelect = function(data){
   }
   else{
     if(typeof data == 'undefined'){
-      for(var property in this.modelProperties){
-        if(this.modelProperties[property].hidden != true) tmpSelect.push(property)
+      for(var property in that.modelProperties){
+        if(that.modelProperties[property].hidden != true) tmpSelect.push(property)
       }
     }
     else{
       if(typeof data.include != 'undefined'){
         data.include.forEach(function(property){
-        if(typeof this.modelProperties[property] != 'undefined'){
-          if(this.modelProperties[property].hidden != true) tmpSelect.push(property)
+        if(typeof that.modelProperties[property] != 'undefined'){
+          if(that.modelProperties[property].hidden != true) tmpSelect.push(property)
         }
         else{
-          throw new Error(g.f('{{find()}} Property %s of model %s don\'t exists ',property,this.modelName));
+          throw new Error(g.f('{{find()}} Property %s of model %s don\'t exists ',property,that.modelName));
         }
         });
       }
       else{
         if(typeof data.exclude != 'undefined'){
           tmpSelect = []
-          for(var property in this.modelProperties){
-            if(this.modelProperties[property].hidden != true) tmpSelect.push(property)
+          for(var property in that.modelProperties){
+            if(that.modelProperties[property].hidden != true) tmpSelect.push(property)
           }
           data.exclude.forEach(function(property){
-            if(typeof this.modelProperties[property] != 'undefined'){
+            if(typeof that.modelProperties[property] != 'undefined'){
               removeIndex = tmpSelect.indexof(property);
               if(removeIndex > -1) tmpSelect = tmpSelect.splice(removeIndex,1);
             }

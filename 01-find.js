@@ -1,4 +1,4 @@
-var findComplex = require('../../custom/findComplex.js');
+var findComplex = require('loopback-postgres-find-complex');
 var exclude = [];
 var include = [];
 
