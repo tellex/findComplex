@@ -486,12 +486,14 @@ findComplex.prototype.translateJoin = function(join,method='LATERAL',parentJoin,
             +tmpParentJoin.alias+"."+tmpJoin.relationData.keyFrom;
           }
 
-          if(closeJoin.where != null){
+          // TODO: The following parentJoin.where replaces former closeJoin.where. Check if works correctly.
+          if(parentJoin.where != null){
             mainQuery.sql = mainQuery.sql + " AND ";
-            mainQuery = mainQuery.merge(closeJoin.where,"");
+            mainQuery = mainQuery.merge(parentJoin.where,"");
           }
         }
         else{
+          // TODO: Check if the following closeJoin.where should also be changed to parentJoin.where.
           if(closeJoin.where != null){
             mainQuery.sql = mainQuery.sql + " WHERE ";
             mainQuery = mainQuery.merge(closeJoin.where,"");
