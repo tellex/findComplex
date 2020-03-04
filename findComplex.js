@@ -587,7 +587,7 @@ findComplex.prototype.createJoinSelect = function(join,childs){
           }
           join.select.exclude.forEach(function(property){
             if(typeof join.relationData.modelToProperties[property] != 'undefined'){
-              removeIndex = tmpSelect.indexof(property);
+              removeIndex = tmpSelect.indexOf(property);
               if(removeIndex > -1) tmpSelect = tmpSelect.splice(removeIndex,1);
             }
           });
@@ -670,7 +670,7 @@ findComplex.prototype.createMainSelect = function(data){
           }
           data.exclude.forEach(function(property){
             if(typeof that.modelProperties[property] != 'undefined'){
-              removeIndex = tmpSelect.indexof(property);
+              removeIndex = tmpSelect.indexOf(property);
               if(removeIndex > -1) tmpSelect = tmpSelect.splice(removeIndex,1);
             }
           });
