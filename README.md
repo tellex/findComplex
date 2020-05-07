@@ -13,13 +13,9 @@ postgresql >= 9.2.
 
 ## Installation
 
-Using npm:
+1. Download this source.
 
-~~~~
-npm i tellex/findComplex --save
-~~~~
-
-Add a copy of 01-find.js to /server/boot  
+2. Add a copy of 01-find.js to /server/boot  
 
 Inside 01-find.js can specify wich models to include or exclude findComplex method.
 include = [] can be empty in wich case findComplex method will be added to all postgresql models. 
