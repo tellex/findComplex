@@ -1,5 +1,9 @@
 # findComplex
 
+A loopback 3 extension to handle better model relations on PostgreSQL.
+
+This is a fork of https://github.com/tellex/findComplex, since it doesn't seem to be receiving maintenance anymore.
+
 ## Description
 A loopback postgresql model find extension to perform complex queries, related models inner,left,right joins with complex where,having and order conditions, compiled in one big sql query using postgresql >= 9.2 new json functions to perform model relations serialization directly on postgres.
 
