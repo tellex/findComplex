@@ -1,4 +1,4 @@
-# findComplex
+# Loopback 3 / findComplex
 
 A loopback 3 extension to handle better model relations on PostgreSQL.
 
