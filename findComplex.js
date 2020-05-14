@@ -22,7 +22,7 @@ findComplex.prototype.bannedFunc = ['SELECT', 'INSERT', 'DELETE', 'CREATE', 'UPD
   'OVER', 'PATITION', 'FROM', 'WINDOW', 'FUNCTION', 'GRANT', 'REVOKE', 'GETPGUSERNAME', 'CURRENT_DATABASE', 'DBLINK', 'PG_SLEEP'
 ];
 
-findComplex.prototype.init = function() {
+findComplex.prototype.init = function () {
   this.modelName = this.model.modelName;
   this.datasource = this.model.getDataSource();
   this.connector = this.datasource.connector;
@@ -33,7 +33,7 @@ findComplex.prototype.init = function() {
 };
 
 
-findComplex.prototype.getRelations = function(relations) {
+findComplex.prototype.getRelations = function (relations) {
   relationData = {};
   for (var relation in relations) {
     tmp = {};
@@ -61,7 +61,7 @@ findComplex.prototype.getRelations = function(relations) {
 };
 
 
-findComplex.prototype.propertyExists = function(property, modelName) {
+findComplex.prototype.propertyExists = function (property, modelName) {
   if (modelName == this.modelName) {
     model = this.model;
     properties = this.connector.getModelDefinition(modelName).properties;
@@ -78,14 +78,14 @@ findComplex.prototype.propertyExists = function(property, modelName) {
   }
 };
 
-findComplex.prototype.translateFunc = function(func, parameters, alias, subFunc = false) {
+findComplex.prototype.translateFunc = function (func, parameters, alias, subFunc = false) {
   if (func.match(/^[$A-Z_][0-9A-Z_$]*$/i) == null) {
     throw new Error(g.f('{{find()}} invalid function name: %s', func));
   }
   switch (func) {
     default:
       sql = ParameterizedSQL(func + '(', []);
-      parameters.forEach(function(param, index) {
+      parameters.forEach(function (param, index) {
         if (Object.prototype.toString.call(param) === '[object Object]') {
           if (typeof param.property != 'undefined') {
             if (param.property.match(/^[A-Z_a-z][0-9A-Z_]*$/i) == null) {
@@ -149,10 +149,10 @@ findComplex.prototype.translateFunc = function(func, parameters, alias, subFunc 
   return sql;
 };
 
-findComplex.prototype.buildInClause = function(columnValues) {
+findComplex.prototype.buildInClause = function (columnValues) {
   var $super = this;
   var values = [];
-  columnValues.forEach(function(value, index) {
+  columnValues.forEach(function (value, index) {
     if (value instanceof ParameterizedSQL) {
       values.push(value);
     } else {
@@ -172,13 +172,13 @@ findComplex.prototype.buildInClause = function(columnValues) {
   return clause;
 };
 
-findComplex.prototype.createCondition = function(data, alias, parentParams, parentFunc, positions, position, level = 0) {
+findComplex.prototype.createCondition = function (data, alias, parentParams, parentFunc, positions, position, level = 0) {
   that = this;
   moduleCondition = 0;
   var sqlCondition = ParameterizedSQL('', []);
   var isValue = false;
   var isJson = false;
-  data.forEach(function(field, index) {
+  data.forEach(function (field, index) {
     if (Object.prototype.toString.call(field) === '[object Array]') {
       if (typeof data[index - 1] == 'string') {
         prior = data[index - 1].toUpperCase();
@@ -287,7 +287,7 @@ findComplex.prototype.createCondition = function(data, alias, parentParams, pare
               parentFunc = func;
             }
             var position = 0;
-            parameters.forEach(function(param, index) {
+            parameters.forEach(function (param, index) {
               position += 1;
               if (Object.prototype.toString.call(param) === '[object Object]' && typeof param.property == 'undefined') {
                 subParams = param;
@@ -306,7 +306,7 @@ findComplex.prototype.createCondition = function(data, alias, parentParams, pare
   return sqlCondition;
 };
 
-findComplex.prototype.sqlSubquery = function(params) {
+findComplex.prototype.sqlSubquery = function (params) {
   sql = new ParameterizedSQL('', []);
   join = '';
   lateralWhere = '';
@@ -390,17 +390,17 @@ findComplex.prototype.sqlSubquery = function(params) {
   return sql;
 };
 
-findComplex.prototype.translateJoin = function(join, method = 'LATERAL', parentJoin, firstPass = true) {
+findComplex.prototype.translateJoin = function (join, method = 'LATERAL', parentJoin, firstPass = true) {
   that = this;
   var joins = [];
   var mainQuery = new ParameterizedSQL('', []);
 
   keys = Object.keys(join);
-  keys.forEach(function(alias) {
+  keys.forEach(function (alias) {
     tmp = join[alias];
 
     subQuery = new ParameterizedSQL('', []);
-    tmp.forEach(function(subJoin, index) {
+    tmp.forEach(function (subJoin, index) {
       if (index == 0) {
         subJoin = subJoin['$relation'];
         switch (subJoin.relationData.type) {
@@ -474,10 +474,13 @@ findComplex.prototype.translateJoin = function(join, method = 'LATERAL', parentJ
           mainQuery = mainQuery.merge(parentJoin.where, '');
         }
       } else {
-        if (closeJoin.where != null) {
-          mainQuery.sql = mainQuery.sql + ' WHERE ';
-          mainQuery = mainQuery.merge(closeJoin.where, '');
-        }
+
+        // @@ Ao que parece não é necessário repetir as condições nos joins da paginação
+        // @@ Além do que isto causa um erro em algumas situações
+        // if (closeJoin.where != null) {
+        //   mainQuery.sql = mainQuery.sql + ' WHERE ';
+        //   mainQuery = mainQuery.merge(closeJoin.where, '');
+        // }
       }
       if (closeJoin.parentJoin.groupBy != null) mainQuery.sql = mainQuery.sql + ' GROUP BY ' + closeJoin.parentJoin.groupBy;
       if (closeJoin.having != null) {
@@ -505,10 +508,13 @@ findComplex.prototype.translateJoin = function(join, method = 'LATERAL', parentJ
             mainQuery = mainQuery.merge(closeJoin.where, '');
           }
         } else {
-          if (closeJoin.where != null) {
-            mainQuery.sql = mainQuery.sql + ' WHERE ';
-            mainQuery = mainQuery.merge(closeJoin.where, '');
-          }
+
+          // @@ Ao que parece não é necessário repetir as condições nos joins da paginação
+          // @@ Além do que isto causa um erro em algumas situações
+          // if (closeJoin.where != null) {
+          //   mainQuery.sql = mainQuery.sql + ' WHERE ';
+          //   mainQuery = mainQuery.merge(closeJoin.where, '');
+          // }
         }
         if (closeJoin.groupBy != null) mainQuery.sql = mainQuery.sql + ' GROUP BY ' + closeJoin.groupBy;
         if (closeJoin.having != null) {
@@ -536,7 +542,7 @@ findComplex.prototype.translateJoin = function(join, method = 'LATERAL', parentJ
   }
 };
 
-findComplex.prototype.createJoinSelect = function(join, childs) {
+findComplex.prototype.createJoinSelect = function (join, childs) {
   var select = [];
   var sqlSelect = '';
   model = this.model.app.models[join.relationData.modelTo];
@@ -549,7 +555,7 @@ findComplex.prototype.createJoinSelect = function(join, childs) {
     }
   } else {
     if (typeof join.select.include != 'undefined') {
-      join.select.include.forEach(function(property) {
+      join.select.include.forEach(function (property) {
         if (typeof join.relationData.modelToProperties[property] != 'undefined') {
           if (join.relationData.modelToProperties[property].hidden != true) select.push(property);
         } else {
@@ -561,7 +567,7 @@ findComplex.prototype.createJoinSelect = function(join, childs) {
       for (var property in join.relationData.modelToProperties) {
         if (join.relationData.modelToProperties[property].hidden != true) tmpSelect.push(property);
       }
-      join.select.exclude.forEach(function(property) {
+      join.select.exclude.forEach(function (property) {
         if (typeof join.relationData.modelToProperties[property] != 'undefined') {
           removeIndex = tmpSelect.indexOf(property);
           if (removeIndex > -1) tmpSelect = tmpSelect.splice(removeIndex, 1);
@@ -572,12 +578,12 @@ findComplex.prototype.createJoinSelect = function(join, childs) {
   }
 
   tmpSelect = [];
-  select.forEach(function(property) {
+  select.forEach(function (property) {
     tmpSelect.push('\'' + property + '\',' + join.alias + '.' + property);
   });
 
   childKeys.splice(0, 1);
-  childKeys.forEach(function(alias) {
+  childKeys.forEach(function (alias) {
     if (childs[alias]['$relation'].select !== false) {
       switch (relationData[alias].type) {
         case 'hasOne':
@@ -614,7 +620,7 @@ findComplex.prototype.createJoinSelect = function(join, childs) {
   return sqlSelect;
 };
 
-findComplex.prototype.createMainSelect = function(data) {
+findComplex.prototype.createMainSelect = function (data) {
   that = this;
   var tmpSelect = [];
   if (Object.prototype.toString.call(data) !== '[object Object]' && typeof data != 'undefined') {
@@ -626,7 +632,7 @@ findComplex.prototype.createMainSelect = function(data) {
       }
     } else {
       if (typeof data.include != 'undefined') {
-        data.include.forEach(function(property) {
+        data.include.forEach(function (property) {
           if (typeof that.modelProperties[property] != 'undefined') {
             if (that.modelProperties[property].hidden != true) tmpSelect.push(property);
           } else {
@@ -639,7 +645,7 @@ findComplex.prototype.createMainSelect = function(data) {
           for (var property in that.modelProperties) {
             if (that.modelProperties[property].hidden != true) tmpSelect.push(property);
           }
-          data.exclude.forEach(function(property) {
+          data.exclude.forEach(function (property) {
             if (typeof that.modelProperties[property] != 'undefined') {
               removeIndex = tmpSelect.indexOf(property);
               if (removeIndex > -1) tmpSelect = tmpSelect.splice(removeIndex, 1);
@@ -651,25 +657,25 @@ findComplex.prototype.createMainSelect = function(data) {
 
     select = [];
     size = tmpSelect.length;
-    tmpSelect.forEach(function(property) {
+    tmpSelect.forEach(function (property) {
       select.push(that.modelName + '.' + property);
     });
   }
   return 'SELECT ' + select.join(',');
 };
 
-findComplex.prototype.createOrderBy = function(join) {
+findComplex.prototype.createOrderBy = function (join) {
   that = this;
   orderBy = [];
   if (typeof join.orderBy != 'undefined' && join.orderBy != null) {
-    join.orderBy.forEach(function(object) {
+    join.orderBy.forEach(function (object) {
       for (var property in object) {
         sort = object[property].toUpperCase();
         if (that.sortOrder.indexOf(sort) == -1) {
           throw new Error(g.f('{{find()}} Sort order %s in OrderBy for property %s in relation %s is invalid, valid values are ASC,DESC,NULLS FIRST,NULLS LAST ', sort, property, join.relation));
         }
         // if (typeof join.relationData.modelToProperties[property] != 'undefined') {
-          orderBy.push(join.alias + '.' + property + ' ' + sort);
+        orderBy.push(join.alias + '.' + property + ' ' + sort);
         // } else {
         //   throw new Error(g.f('{{find()}} Property %s in OrderBy for model %s don\'t exists', property, join.relationData.modelTo));
         // }
@@ -714,7 +720,7 @@ findComplex.prototype.createOrderBy = function(join) {
   return join;
 };
 
-findComplex.prototype.createGroupBy = function(join) {
+findComplex.prototype.createGroupBy = function (join) {
   groupBy = [];
   switch (join.relationData.type) {
     case 'hasMany':
@@ -731,7 +737,7 @@ findComplex.prototype.createGroupBy = function(join) {
   }
 };
 
-findComplex.prototype.createJoins = function(include, modelName, firstPass = true, parentAlias = null, level, sublevel = 0) {
+findComplex.prototype.createJoins = function (include, modelName, firstPass = true, parentAlias = null, level, sublevel = 0) {
   that = this;
   var joinData = {};
   if (modelName == this.modelName) {
@@ -744,7 +750,7 @@ findComplex.prototype.createJoins = function(include, modelName, firstPass = tru
     relationData = this.getRelations(model.relations);
   }
   keys = Object.keys(include);
-  keys.forEach(function(alias, index) {
+  keys.forEach(function (alias, index) {
     if (alias.match(/^[A-Z_a-z][0-9A-Z_]*$/i) == null) {
       throw new Error(g.f('{{find()}} invalid alias name %s, alias must start with a letter or underscore, can only contain letters,numbers or underscore', alias));
     }
@@ -842,37 +848,37 @@ findComplex.prototype.createJoins = function(include, modelName, firstPass = tru
   return joinData;
 };
 
-findComplex.prototype.generateQuery = function(select, where, order, offset, limit, joinSqls, pagingSql) {
+findComplex.prototype.generateQuery = function (select, where, order, offset, limit, joinSqls, pagingSql) {
   that = this;
   mainSql = new ParameterizedSQL('', []);
   orderBy = [];
   pKeys = this.model.definition.ids();
-  pKeys.forEach(function(pkey) {
+  pKeys.forEach(function (pkey) {
     orderBy.push(that.modelName + '.' + pkey.name + ' ASC');
   });
   orderBy = ' ORDER BY ' + orderBy.join(',');
 
   mainSql.sql = this.createMainSelect(select);
-  joinSqls.forEach(function(join) {
+  joinSqls.forEach(function (join) {
     if (join.data.ignore != true) {
       mainSql.sql = mainSql.sql + ',' + join.data.alias + '.' + join.data.alias + ' AS ' + join.data.alias;
     }
   });
   mainSql.sql = mainSql.sql + ' from ' + this.schema + '.' + this.modelTable + ' AS ' + this.modelName;
-  joinSqls.forEach(function(join) {
+  joinSqls.forEach(function (join) {
     mainSql = mainSql.merge(join.sqlQuery, '');
   });
 
   if (typeof order != 'undefined' && order != null) {
     orderBy = [];
-    order.forEach(function(object) {
+    order.forEach(function (object) {
       for (var property in object) {
         sort = object[property].toUpperCase();
         if (that.sortOrder.indexOf(sort) == -1) {
           throw new Error(g.f('{{find()}} Sort order %s in OrderBy for property %s in model %s is invalid, valid values are ASC,DESC,NULLS FIRST,NULLS LAST ', sort, property, that.modelName));
         }
         // if (typeof that.modelProperties[property] != 'undefined') {
-          orderBy.push(property + ' ' + sort);
+        orderBy.push(property + ' ' + sort);
         // } else {
         //   throw new Error(g.f('{{find()}} Property %s of model %s don\'t exists ', property, that.modelName));
         // }
@@ -914,20 +920,20 @@ findComplex.prototype.generateQuery = function(select, where, order, offset, lim
   return mainSql;
 };
 
-findComplex.prototype.pagingQuery = function(pagingJoins, where, order, offset, limit) {
+findComplex.prototype.pagingQuery = function (pagingJoins, where, order, offset, limit) {
   that = this;
   pagingSql = new ParameterizedSQL('', []);
   orderBy = [];
   pKeySelect = [];
   pKeys = this.model.definition.ids();
-  pKeys.forEach(function(pkey) {
+  pKeys.forEach(function (pkey) {
     pKeySelect.push(that.modelName + '.' + pkey.name);
     orderBy.push(that.modelName + '.' + pkey.name + ' ASC');
   });
   orderBy = ' ORDER BY ' + orderBy.join(',');
 
   pagingSql.sql = pKeySelect[0] + ' IN (SELECT ' + pKeySelect[0] + ' FROM ' + this.schema + '.' + this.modelTable + ' AS ' + this.modelName;
-  pagingJoins.forEach(function(pagingJoin) {
+  pagingJoins.forEach(function (pagingJoin) {
     pagingSql = pagingSql.merge(pagingJoin.sqlQuery, '');
   });
 
@@ -939,14 +945,14 @@ findComplex.prototype.pagingQuery = function(pagingJoins, where, order, offset, 
 
   if (typeof order != 'undefined' && (Object.prototype.toString.call(order) == '[object Array]') ? order.length != 0 : false) {
     orderBy = [];
-    order.forEach(function(object) {
+    order.forEach(function (object) {
       for (var property in object) {
         sort = object[property].toUpperCase();
         if (that.sortOrder.indexOf(sort) == -1) {
           throw new Error(g.f('{{find()}} Sort order %s in OrderBy for property %s in model %s is invalid, valid values are ASC,DESC,NULLS FIRST,NULLS LAST ', sort, property, that.modelName));
         }
         // if (typeof that.modelProperties[property] != 'undefined') {
-          orderBy.push(property + ' ' + sort);
+        orderBy.push(property + ' ' + sort);
         // } else {
         //   throw new Error(g.f('{{find()}} Property %s of model %s don\'t exists ', property, that.modelName));
         // }
@@ -958,11 +964,11 @@ findComplex.prototype.pagingQuery = function(pagingJoins, where, order, offset, 
   return pagingSql;
 };
 
-findComplex.prototype.counterQuery = function(counterJoins, where) {
+findComplex.prototype.counterQuery = function (counterJoins, where) {
   that = this;
   counterSql = new ParameterizedSQL('', []);
   counterSql.sql = 'SELECT count(' + this.modelName + ') as count FROM ' + this.schema + '.' + this.modelTable + ' AS ' + this.modelName;
-  counterJoins.forEach(function(counterJoin) {
+  counterJoins.forEach(function (counterJoin) {
     counterSql = counterSql.merge(counterJoin.sqlQuery, '');
   });
 
@@ -975,7 +981,7 @@ findComplex.prototype.counterQuery = function(counterJoins, where) {
   return counterSql;
 };
 
-findComplex.prototype.find = function(filter, cb, onlyOne = false) {
+findComplex.prototype.find = function (filter, cb, onlyOne = false) {
   var joinSqls = [];
   var pagingSql = null;
 
@@ -999,13 +1005,13 @@ findComplex.prototype.find = function(filter, cb, onlyOne = false) {
 
   mainSql = this.generateQuery(filter.select, filter.where, filter.order, filter.offset, filter.limit, joinSqls, pagingSql);
   sql = this.datasource.connector.parameterize(mainSql);
-  this.datasource.connector.execute(sql.sql, sql.params, function(error, data) {
+  this.datasource.connector.execute(sql.sql, sql.params, function (error, data) {
     if (onlyOne) data = (data != null) ? data[0] : null;
     cb(error, data);
   });
 };
 
-findComplex.prototype.count = function(filter, cb) {
+findComplex.prototype.count = function (filter, cb) {
   counterJoins = [];
   if (Object.prototype.toString.call(filter.include) == '[object Object]') {
     include = this.createJoins(filter.include, this.modelName);
@@ -1013,7 +1019,7 @@ findComplex.prototype.count = function(filter, cb) {
   }
   counterSql = this.counterQuery(counterJoins, filter.where);
   sql = this.datasource.connector.parameterize(counterSql);
-  this.datasource.connector.execute(sql.sql, sql.params, function(error, data) {
+  this.datasource.connector.execute(sql.sql, sql.params, function (error, data) {
     cb(error, (data != null) ? data[0].count : null);
   });
 };
