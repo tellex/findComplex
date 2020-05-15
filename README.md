@@ -1,4 +1,8 @@
-# findComplex
+# Loopback 3 / findComplex
+
+A loopback 3 extension to handle better model relations on PostgreSQL.
+
+This is a fork of https://github.com/tellex/findComplex, since it doesn't seem to be receiving maintenance anymore.
 
 ## Description
 A loopback postgresql model find extension to perform complex queries, related models inner,left,right joins with complex where,having and order conditions, compiled in one big sql query using postgresql >= 9.2 new json functions to perform model relations serialization directly on postgres.
@@ -9,13 +13,9 @@ postgresql >= 9.2.
 
 ## Installation
 
-Using npm:
+1. Download this source.
 
-~~~~
-npm i tellex/findComplex --save
-~~~~
-
-Add a copy of 01-find.js to /server/boot  
+2. Add a copy of 01-find.js to /server/boot  
 
 Inside 01-find.js can specify wich models to include or exclude findComplex method.
 include = [] can be empty in wich case findComplex method will be added to all postgresql models. 
